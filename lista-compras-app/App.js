@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, FlatList, StyleSheet, Switch, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 
 const App = () => {
@@ -7,8 +7,9 @@ const App = () => {
     const [itemQuantity, setItemQuantity] = useState('');
     const [items, setItems] = useState([]);
     const [editingItemId, setEditingItemId] = useState(null);
+    const [message, setMessage] = useState(''); // Para exibir a mensagem de item pego
 
-    const API_URL = 'https://2b21-2804-1b1-a940-ff19-18d7-ea6-4059-6f49.ngrok-free.app/items'; // Ajuste a URL conforme necessário
+    const API_URL = 'https://2b21-2804-1b1-a940-ff19-18d7-ea6-4059-6f49.ngrok-free.app/items';
 
     const fetchItems = async () => {
         try {
@@ -91,6 +92,8 @@ const App = () => {
             });
             if (response.ok) {
                 fetchItems();
+                setMessage(`O item foi ${!currentStatus ? 'pego' : 'desmarcado'}`);
+                setTimeout(() => setMessage(''), 2000); // Esconde a mensagem após 2 segundos
             }
         } catch (error) {
             console.error('Erro ao atualizar item:', error);
@@ -108,13 +111,12 @@ const App = () => {
                 data={items}
                 keyExtractor={(item) => item._id}
                 renderItem={({ item }) => (
-                    <View style={styles.itemContainer}>
+                    <TouchableOpacity
+                        style={[styles.itemContainer, item.purchased && styles.purchasedItem]}
+                        onPress={() => togglePurchased(item._id, item.purchased)}
+                    >
                         <View style={styles.itemTextContainer}>
-                            <Text style={styles.itemText}>{item.name} - {item.quantity}</Text>
-                            <Switch
-                                value={item.purchased}
-                                onValueChange={() => togglePurchased(item._id, item.purchased)}
-                            />
+                            <Text style={styles.itemText}>{item.quantity} - {item.name}</Text>
                         </View>
                         <View style={styles.iconContainer}>
                             <TouchableOpacity onPress={() => {
@@ -128,9 +130,12 @@ const App = () => {
                                 <MaterialIcons name="delete" size={24} color="red" />
                             </TouchableOpacity>
                         </View>
-                    </View>
+                    </TouchableOpacity>
                 )}
             />
+            {/* Exibe a mensagem ao marcar como comprado */}
+            {message ? <Text style={styles.messageText}>{message}</Text> : null}
+
             <View style={styles.formContainer}>
                 <TextInput
                     style={styles.input}
@@ -138,7 +143,7 @@ const App = () => {
                     value={itemName}
                     onChangeText={setItemName}
                 />
-                                <TextInput
+                <TextInput
                     style={styles.input}
                     placeholder="Quantidade"
                     value={itemQuantity}
@@ -158,60 +163,65 @@ const App = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
         padding: 20,
-        backgroundColor: '#fff',
+        backgroundColor: '#f8f8f8',
     },
     title: {
         fontSize: 24,
-        fontWeight: 'bold',
-        textAlign: 'center',
         marginBottom: 20,
     },
     itemContainer: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
         alignItems: 'center',
+        justifyContent: 'space-between',
         padding: 10,
         borderBottomWidth: 1,
         borderBottomColor: '#ccc',
-        marginBottom: 10,
+        width: '100%',
+    },
+    purchasedItem: {
+        backgroundColor: '#d4edda', // Cor de fundo verde quando comprado
     },
     itemTextContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
         flex: 1,
     },
     itemText: {
         fontSize: 18,
-        flex: 1,
     },
     iconContainer: {
         flexDirection: 'row',
-        alignItems: 'center',
+        justifyContent: 'space-between',
+        width: 70,
     },
     formContainer: {
         marginTop: 20,
+        width: '100%',
     },
     input: {
+        width: '100%',
+        height: 40,
+        borderColor: 'gray',
         borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 5,
-        padding: 10,
         marginBottom: 10,
-        fontSize: 18,
+        paddingHorizontal: 10,
     },
     addButton: {
-        backgroundColor: '#007BFF',
-        padding: 15,
-        borderRadius: 5,
+        backgroundColor: 'blue',
+        paddingVertical: 10,
         alignItems: 'center',
+        borderRadius: 5,
     },
     addButtonText: {
-        color: '#fff',
+        color: 'white',
+        fontSize: 16,
+    },
+    messageText: {
+        color: 'green',
         fontSize: 18,
-        fontWeight: 'bold',
+        marginVertical: 10,
     },
 });
 
 export default App;
-
