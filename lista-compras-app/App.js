@@ -83,23 +83,32 @@ const App = () => {
 
     const togglePurchased = async (id, currentStatus) => {
         try {
+            // Encontra o item que está sendo atualizado
+            const itemToUpdate = items.find(item => item._id === id);
+
+            // Envia todos os campos na requisição
             const response = await fetch(`${API_URL}/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ purchased: !currentStatus }),
+                body: JSON.stringify({
+                    name: itemToUpdate.name,
+                    quantity: itemToUpdate.quantity,
+                    purchased: !currentStatus
+                }),
             });
-            if (response.ok) {
-                fetchItems();
-                setMessage(`O item foi ${!currentStatus ? 'pego' : 'desmarcado'}`);
-                setTimeout(() => setMessage(''), 2000); // Esconde a mensagem após 2 segundos
+
+            if (!response.ok) {
+                const data = await response.json();
+                console.error('Erro ao atualizar item no servidor:', response.status, response.statusText, data);
+            } else {
+                fetchItems(); // Atualiza a lista de itens após a alteração
             }
         } catch (error) {
             console.error('Erro ao atualizar item:', error);
         }
     };
-
     useEffect(() => {
         fetchItems();
     }, []);
@@ -112,13 +121,18 @@ const App = () => {
                 keyExtractor={(item) => item._id}
                 renderItem={({ item }) => (
                     <TouchableOpacity
-                        style={[styles.itemContainer, item.purchased && styles.purchasedItem]}
-                        onPress={() => togglePurchased(item._id, item.purchased)}
+                        activeOpacity={0.6} // Define a opacidade ao clicar
+                        style={styles.itemContainer}
+                        onPress={() => togglePurchased(item._id, item.purchased)} // Chama a função ao clicar
                     >
                         <View style={styles.itemTextContainer}>
                             <Text style={styles.itemText}>{item.quantity} - {item.name}</Text>
                         </View>
                         <View style={styles.iconContainer}>
+                            {/* Ícone de marca de verificação que aparece se o item estiver comprado */}
+                            {item.purchased && (
+                                <MaterialIcons name="check" size={24} color="green" />
+                            )}
                             <TouchableOpacity onPress={() => {
                                 setEditingItemId(item._id);
                                 setItemName(item.name);
@@ -133,6 +147,8 @@ const App = () => {
                     </TouchableOpacity>
                 )}
             />
+
+
             {/* Exibe a mensagem ao marcar como comprado */}
             {message ? <Text style={styles.messageText}>{message}</Text> : null}
 
@@ -181,9 +197,6 @@ const styles = StyleSheet.create({
         borderBottomColor: '#ccc',
         width: '100%',
     },
-    purchasedItem: {
-        backgroundColor: '#d4edda', // Cor de fundo verde quando comprado
-    },
     itemTextContainer: {
         flex: 1,
     },
@@ -193,7 +206,7 @@ const styles = StyleSheet.create({
     iconContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        width: 70,
+        width: 100, // Ajuste o espaço dos ícones
     },
     formContainer: {
         marginTop: 20,
