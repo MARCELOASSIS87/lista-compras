@@ -129,10 +129,12 @@ const App = () => {
                             <Text style={styles.itemText}>{item.quantity} - {item.name}</Text>
                         </View>
                         <View style={styles.iconContainer}>
-                            {/* Ícone de marca de verificação que aparece se o item estiver comprado */}
-                            {item.purchased && (
-                                <MaterialIcons name="check" size={24} color="green" />
-                            )}
+                            {/* Espaço reservado para o ícone de verificação */}
+                            <View style={{ width: 24, marginRight: 10 }}>
+                                {item.purchased && (
+                                    <MaterialIcons name="check" size={24} color="green" />
+                                )}
+                            </View>
                             <TouchableOpacity onPress={() => {
                                 setEditingItemId(item._id);
                                 setItemName(item.name);
