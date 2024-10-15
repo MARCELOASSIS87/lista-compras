@@ -13,23 +13,33 @@
     },
     "ios": {
       "supportsTablet": true,
-      "permissions": ["NSAppTransportSecurity"]
+      "permissions": [
+        "NSAppTransportSecurity"
+      ]
     },
     "android": {
       "config": {
         "googleServicesFile": "./google-services.json",
         "networking": {
           "enabled": true
-      }},
-      "permissions": ["android.permission.INTERNET"],
+        }
+      },
+      "permissions": [
+        "android.permission.INTERNET"
+      ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-        
-      }
+      },
+      "package": "com.marceloassis502.listacomprasapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "17ddd50a-5061-4e51-a096-3943624fd60a"
+      }
     }
   }
 }
