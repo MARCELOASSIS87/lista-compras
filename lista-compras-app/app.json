@@ -1,0 +1,35 @@
+{
+  "expo": {
+    "name": "lista-compras-app",
+    "slug": "lista-compras-app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "permissions": ["NSAppTransportSecurity"]
+    },
+    "android": {
+      "config": {
+        "googleServicesFile": "./google-services.json",
+        "networking": {
+          "enabled": true
+      }},
+      "permissions": ["android.permission.INTERNET"],
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+        
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+  }
+}
