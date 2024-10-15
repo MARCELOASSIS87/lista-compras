@@ -85,7 +85,7 @@ const App = () => {
         try {
             // Encontra o item que está sendo atualizado
             const itemToUpdate = items.find(item => item._id === id);
-    
+
             // Envia todos os campos na requisição
             const response = await fetch(`${API_URL}/${id}`, {
                 method: 'PUT',
@@ -98,7 +98,7 @@ const App = () => {
                     purchased: !currentStatus
                 }),
             });
-    
+
             if (!response.ok) {
                 const data = await response.json();
                 console.error('Erro ao atualizar item no servidor:', response.status, response.statusText, data);
@@ -109,49 +109,46 @@ const App = () => {
             console.error('Erro ao atualizar item:', error);
         }
     };
-    
-    
-    
-    
-
     useEffect(() => {
         fetchItems();
     }, []);
 
     return (
         <View style={styles.container}>
-    <Text style={styles.title}>Lista de Compras</Text>
-    <FlatList
-        data={items}
-        keyExtractor={(item) => item._id}
-        renderItem={({ item }) => (
-            <TouchableOpacity
-                activeOpacity={0.6} // Define a opacidade ao clicar
-                style={styles.itemContainer}
-                onPress={() => togglePurchased(item._id, item.purchased)} // Chama a função ao clicar
-            >
-                <View style={styles.itemTextContainer}>
-                    <Text style={styles.itemText}>{item.quantity} - {item.name}</Text>
-                </View>
-                <View style={styles.iconContainer}>
-                    {/* Ícone de marca de verificação que aparece se o item estiver comprado */}
-                    {item.purchased && (
-                        <MaterialIcons name="check" size={24} color="green" />
-                    )}
-                    <TouchableOpacity onPress={() => {
-                        setEditingItemId(item._id);
-                        setItemName(item.name);
-                        setItemQuantity(item.quantity.toString());
-                    }}>
-                        <MaterialIcons name="edit" size={24} color="blue" />
+            <Text style={styles.title}>Lista de Compras</Text>
+            <FlatList
+                data={items}
+                keyExtractor={(item) => item._id}
+                renderItem={({ item }) => (
+                    <TouchableOpacity
+                        activeOpacity={0.6} // Define a opacidade ao clicar
+                        style={styles.itemContainer}
+                        onPress={() => togglePurchased(item._id, item.purchased)} // Chama a função ao clicar
+                    >
+                        <View style={styles.itemTextContainer}>
+                            <Text style={styles.itemText}>{item.quantity} - {item.name}</Text>
+                        </View>
+                        <View style={styles.iconContainer}>
+                            {/* Espaço reservado para o ícone de verificação */}
+                            <View style={{ width: 24, marginRight: 10 }}>
+                                {item.purchased && (
+                                    <MaterialIcons name="check" size={24} color="green" />
+                                )}
+                            </View>
+                            <TouchableOpacity onPress={() => {
+                                setEditingItemId(item._id);
+                                setItemName(item.name);
+                                setItemQuantity(item.quantity.toString());
+                            }}>
+                                <MaterialIcons name="edit" size={24} color="blue" />
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => deleteItem(item._id)}>
+                                <MaterialIcons name="delete" size={24} color="red" />
+                            </TouchableOpacity>
+                        </View>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => deleteItem(item._id)}>
-                        <MaterialIcons name="delete" size={24} color="red" />
-                    </TouchableOpacity>
-                </View>
-            </TouchableOpacity>
-        )}
-    />
+                )}
+            />
 
 
             {/* Exibe a mensagem ao marcar como comprado */}
