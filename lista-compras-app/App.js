@@ -83,27 +83,34 @@ const App = () => {
 
     const togglePurchased = async (id, currentStatus) => {
         try {
-            // Atualiza o estado localmente antes de fazer a chamada ao servidor
-            const updatedItems = items.map(item => 
-                item._id === id ? { ...item, purchased: !currentStatus } : item
-            );
-            setItems(updatedItems);
+            // Encontra o item que está sendo atualizado
+            const itemToUpdate = items.find(item => item._id === id);
     
+            // Envia todos os campos na requisição
             const response = await fetch(`${API_URL}/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ purchased: !currentStatus }),
+                body: JSON.stringify({
+                    name: itemToUpdate.name,
+                    quantity: itemToUpdate.quantity,
+                    purchased: !currentStatus
+                }),
             });
     
             if (!response.ok) {
-                console.error('Erro ao atualizar item no servidor:', response.statusText);
+                const data = await response.json();
+                console.error('Erro ao atualizar item no servidor:', response.status, response.statusText, data);
+            } else {
+                fetchItems(); // Atualiza a lista de itens após a alteração
             }
         } catch (error) {
             console.error('Erro ao atualizar item:', error);
         }
     };
+    
+    
     
     
 
