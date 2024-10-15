@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
-import { BRANCH_NAME } from './branch';
+import { BRANCH_NAME } from './branch';//nome da branch
 
 const App = () => {
     const [itemName, setItemName] = useState('');
@@ -113,11 +113,11 @@ const App = () => {
     useEffect(() => {
         fetchItems();
     }, []);
-
+//2 textos
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Lista de Compras</Text>
-            <Text style={styles.title}>FrontEnd da Branch: {BRANCH_NAME}</Text>
+            <Text style={styles.title}>FrontEnd da Branch: {BRANCH_NAME}</Text> 
             <FlatList
                 data={items}
                 keyExtractor={(item) => item._id}
