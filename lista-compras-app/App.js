@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, FlatList, StyleSheet } from 'react-native';
-import { Switch } from 'react-native';
+import { View, Text, TextInput, Button, FlatList, StyleSheet, Switch, TouchableOpacity } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 
 const App = () => {
     const [itemName, setItemName] = useState('');
     const [itemQuantity, setItemQuantity] = useState('');
     const [items, setItems] = useState([]);
+    const [editingItemId, setEditingItemId] = useState(null);
 
-    const API_URL = 'https://2b21-2804-1b1-a940-ff19-18d7-ea6-4059-6f49.ngrok-free.app/items'; // Coloque a URL correta da API
+    const API_URL = 'https://2b21-2804-1b1-a940-ff19-18d7-ea6-4059-6f49.ngrok-free.app/items'; // Ajuste a URL conforme necessário
 
     const fetchItems = async () => {
-        console.log('Fetching items...');
         try {
             const response = await fetch(API_URL);
             if (!response.ok) {
@@ -18,7 +18,6 @@ const App = () => {
                 return;
             }
             const data = await response.json();
-            console.log('Itens recebidos:', data);
             setItems(data);
         } catch (error) {
             console.error('Erro ao buscar itens:', error);
@@ -26,8 +25,8 @@ const App = () => {
     };
 
     const addItem = async () => {
+        if (!itemName || !itemQuantity) return;
         const newItem = { name: itemName, quantity: parseInt(itemQuantity), purchased: false };
-        console.log('Adicionando item:', newItem);
         try {
             const response = await fetch(API_URL, {
                 method: 'POST',
@@ -37,15 +36,47 @@ const App = () => {
                 body: JSON.stringify(newItem),
             });
             if (response.ok) {
-                console.log('Item adicionado com sucesso');
                 setItemName('');
                 setItemQuantity('');
-                fetchItems(); // Refresh the list after adding
-            } else {
-                console.error('Erro ao adicionar item:', response.statusText);
+                fetchItems();
             }
         } catch (error) {
             console.error('Erro ao adicionar item:', error);
+        }
+    };
+
+    const editItem = async () => {
+        if (!editingItemId || !itemName || !itemQuantity) return;
+        const updatedItem = { name: itemName, quantity: parseInt(itemQuantity) };
+        try {
+            const response = await fetch(`${API_URL}/${editingItemId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updatedItem),
+            });
+            if (response.ok) {
+                setItemName('');
+                setItemQuantity('');
+                setEditingItemId(null);
+                fetchItems();
+            }
+        } catch (error) {
+            console.error('Erro ao atualizar item:', error);
+        }
+    };
+
+    const deleteItem = async (id) => {
+        try {
+            const response = await fetch(`${API_URL}/${id}`, {
+                method: 'DELETE',
+            });
+            if (response.ok) {
+                fetchItems();
+            }
+        } catch (error) {
+            console.error('Erro ao deletar item:', error);
         }
     };
 
@@ -56,13 +87,10 @@ const App = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ purchased: !currentStatus }), // Inverte o status
+                body: JSON.stringify({ purchased: !currentStatus }),
             });
             if (response.ok) {
-                console.log(`Item ${id} atualizado para purchased: ${!currentStatus}`);
-                fetchItems(); // Atualiza a lista após a mudança
-            } else {
-                console.error('Erro ao atualizar item:', response.statusText);
+                fetchItems();
             }
         } catch (error) {
             console.error('Erro ao atualizar item:', error);
@@ -76,34 +104,53 @@ const App = () => {
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Lista de Compras</Text>
-            <TextInput
-                style={styles.input}
-                placeholder="Nome do item"
-                value={itemName}
-                onChangeText={setItemName}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Quantidade"
-                value={itemQuantity}
-                onChangeText={setItemQuantity}
-                keyboardType="numeric"
-            />
-            <Button title="Adicionar Item" onPress={addItem} />
             <FlatList
                 data={items}
                 keyExtractor={(item) => item._id}
                 renderItem={({ item }) => (
                     <View style={styles.itemContainer}>
-                        <Text>{item.name} - {item.quantity}</Text>
-                        {/* Adiciona um Switch para marcar o item como "purchased" */}
-                        <Switch
-                            value={item.purchased}  // Controla o estado "purchased" do item
-                            onValueChange={() => togglePurchased(item._id, item.purchased)}  // Função para alternar estado
-                        />
+                        <View style={styles.itemTextContainer}>
+                            <Text style={styles.itemText}>{item.name} - {item.quantity}</Text>
+                            <Switch
+                                value={item.purchased}
+                                onValueChange={() => togglePurchased(item._id, item.purchased)}
+                            />
+                        </View>
+                        <View style={styles.iconContainer}>
+                            <TouchableOpacity onPress={() => {
+                                setEditingItemId(item._id);
+                                setItemName(item.name);
+                                setItemQuantity(item.quantity.toString());
+                            }}>
+                                <MaterialIcons name="edit" size={24} color="blue" />
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => deleteItem(item._id)}>
+                                <MaterialIcons name="delete" size={24} color="red" />
+                            </TouchableOpacity>
+                        </View>
                     </View>
                 )}
             />
+            <View style={styles.formContainer}>
+                <TextInput
+                    style={styles.input}
+                    placeholder="Nome do item"
+                    value={itemName}
+                    onChangeText={setItemName}
+                />
+                                <TextInput
+                    style={styles.input}
+                    placeholder="Quantidade"
+                    value={itemQuantity}
+                    onChangeText={setItemQuantity}
+                    keyboardType="numeric"
+                />
+                <TouchableOpacity style={styles.addButton} onPress={editingItemId ? editItem : addItem}>
+                    <Text style={styles.addButtonText}>
+                        {editingItemId ? "Atualizar Item" : "Adicionar Item"}
+                    </Text>
+                </TouchableOpacity>
+            </View>
         </View>
     );
 };
@@ -111,30 +158,60 @@ const App = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
         padding: 20,
-        backgroundColor: '#f8f8f8',
+        backgroundColor: '#fff',
     },
     title: {
         fontSize: 24,
+        fontWeight: 'bold',
+        textAlign: 'center',
         marginBottom: 20,
-    },
-    input: {
-        width: '100%',
-        height: 40,
-        borderColor: 'gray',
-        borderWidth: 1,
-        marginBottom: 10,
-        paddingHorizontal: 10,
     },
     itemContainer: {
         flexDirection: 'row',
+        justifyContent: 'space-between',
         alignItems: 'center',
         padding: 10,
         borderBottomWidth: 1,
         borderBottomColor: '#ccc',
+        marginBottom: 10,
+    },
+    itemTextContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        flex: 1,
+    },
+    itemText: {
+        fontSize: 18,
+        flex: 1,
+    },
+    iconContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    formContainer: {
+        marginTop: 20,
+    },
+    input: {
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 5,
+        padding: 10,
+        marginBottom: 10,
+        fontSize: 18,
+    },
+    addButton: {
+        backgroundColor: '#007BFF',
+        padding: 15,
+        borderRadius: 5,
+        alignItems: 'center',
+    },
+    addButtonText: {
+        color: '#fff',
+        fontSize: 18,
+        fontWeight: 'bold',
     },
 });
 
 export default App;
+

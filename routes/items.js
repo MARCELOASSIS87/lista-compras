@@ -1,12 +1,23 @@
 const express = require('express');
 const router = express.Router();
-
-// Modelo Item (vamos criar um exemplo abaixo)
+const Joi = require('joi'); // Importando Joi para validação
 const Item = require('../models/Item');
 
-// Criar um item (POST)
+// Esquema de validação usando Joi
+const itemSchema = Joi.object({
+  name: Joi.string().min(1).required(),
+  quantity: Joi.number().integer().min(1).required(),
+  purchased: Joi.boolean().optional(),
+});
+
+// Itm POST
 router.post('/', async (req, res) => {
-  console.log('Recebendo requisição POST para criar um item:', req.body); // Log da requisição
+  console.log('Recebendo requisição POST para criar um item:', req.body);
+
+  const { error } = itemSchema.validate(req.body); // Validação
+  if (error) {
+    return res.status(400).json({ message: error.details[0].message });
+  }
 
   try {
     const newItem = new Item({
@@ -15,10 +26,10 @@ router.post('/', async (req, res) => {
       purchased: req.body.purchased || false
     });
     const savedItem = await newItem.save();
-    console.log('Item criado com sucesso:', savedItem); // Log do item criado
+    console.log('Item criado com sucesso:', savedItem);
     res.status(201).json(savedItem);
   } catch (err) {
-    console.error('Erro ao criar item:', err.message); // Log do erro
+    console.error('Erro ao criar item:', err.message);
     res.status(400).json({ message: err.message });
   }
 });
@@ -39,18 +50,22 @@ router.get('/', async (req, res) => {
 
 // Atualizar um item (PUT)
 router.put('/:id', async (req, res) => {
-  console.log(`Recebendo requisição PUT para atualizar item com ID: ${req.params.id}`); // Log da requisição
+  console.log(`Recebendo requisição PUT para atualizar item com ID: ${req.params.id}`);
+
+  const { error } = itemSchema.validate(req.body); // Validação
+  if (error) {
+    return res.status(400).json({ message: error.details[0].message });
+  }
 
   try {
     const updatedItem = await Item.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    console.log('Item atualizado:', updatedItem); // Log do item atualizado
+    console.log('Item atualizado:', updatedItem);
     res.json(updatedItem);
   } catch (err) {
-    console.error('Erro ao atualizar item:', err.message); // Log do erro
+    console.error('Erro ao atualizar item:', err.message);
     res.status(400).json({ message: err.message });
   }
 });
-
 // Deletar um item (DELETE)
 router.delete('/:id', async (req, res) => {
   console.log(`Recebendo requisição DELETE para item com ID: ${req.params.id}`); // Log da requisição
