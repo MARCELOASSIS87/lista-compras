@@ -10,7 +10,7 @@ const App = () => {
     const [editingItemId, setEditingItemId] = useState(null);
     const [message, setMessage] = useState(''); // Para exibir a mensagem de item pego
 
-    const API_URL = 'https://2b21-2804-1b1-a940-ff19-18d7-ea6-4059-6f49.ngrok-free.app/items';
+    const API_URL = 'https://d3c3-2804-1b1-a940-ff19-ea11-32ff-febc-114b.ngrok-free.app/items';
 
     const fetchItems = async () => {
         try {

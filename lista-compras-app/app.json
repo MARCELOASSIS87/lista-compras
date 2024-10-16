@@ -15,7 +15,8 @@
       "supportsTablet": true,
       "permissions": [
         "NSAppTransportSecurity"
-      ]
+      ],
+      "bundleIdentifier": "com.marceloassis502.listacomprasapp"
     },
     "android": {
       "config": {
