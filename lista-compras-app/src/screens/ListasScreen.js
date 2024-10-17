@@ -11,7 +11,7 @@ const ListScreen = ({ navigation }) => {
   // Função para buscar listas do servidor
   const fetchLists = async () => {
     // Supondo que sua API para buscar listas esteja em /lists
-    const API_URL = 'https://seu-endereco-api.ngrok.io/lists'; 
+    const API_URL = 'https://a3ff-2804-1b1-a940-ff19-c49c-c87-c702-1994.ngrok-free.app/lists'; 
     try {
       const response = await fetch(API_URL);
       const data = await response.json();

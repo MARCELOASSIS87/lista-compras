@@ -15,7 +15,7 @@ const ItemsScreen = ({ route, navigation }) => {
 
   // Função para buscar itens da lista específica
   const fetchItems = async () => {
-    const API_URL = `https://seu-endereco-api.ngrok.io/lists/${listId}/items`;
+    const API_URL = `https://a3ff-2804-1b1-a940-ff19-c49c-c87-c702-1994.ngrok-free.app/lists/${listId}/items`;
     try {
       const response = await fetch(API_URL);
       const data = await response.json();
@@ -31,7 +31,7 @@ const ItemsScreen = ({ route, navigation }) => {
       return;
     }
     const newItem = { name: itemName, quantity: parseInt(itemQuantity) };
-    const API_URL = `https://seu-endereco-api.ngrok.io/lists/${listId}/items`;
+    const API_URL = `https://a3ff-2804-1b1-a940-ff19-c49c-c87-c702-1994.ngrok-free.app/lists/${listId}/items`;
     try {
       const response = await fetch(API_URL, {
         method: 'POST',
@@ -56,7 +56,7 @@ const ItemsScreen = ({ route, navigation }) => {
       return;
     }
     const updatedItem = { name: itemName, quantity: parseInt(itemQuantity) };
-    const API_URL = `https://seu-endereco-api.ngrok.io/lists/${listId}/items/${editingItemId}`;
+    const API_URL = `https://a3ff-2804-1b1-a940-ff19-c49c-c87-c702-1994.ngrok-free.app/lists/${listId}/items/${editingItemId}`;
     try {
       const response = await fetch(API_URL, {
         method: 'PUT',
@@ -77,7 +77,7 @@ const ItemsScreen = ({ route, navigation }) => {
   };
 
   const deleteItem = async (id) => {
-    const API_URL = `https://seu-endereco-api.ngrok.io/lists/${listId}/items/${id}`;
+    const API_URL = `https://a3ff-2804-1b1-a940-ff19-c49c-c87-c702-1994.ngrok-free.app/lists/${listId}/items/${id}`;
     try {
       const response = await fetch(API_URL, {
         method: 'DELETE',
