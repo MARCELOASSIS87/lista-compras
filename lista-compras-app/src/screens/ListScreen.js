@@ -3,19 +3,31 @@ import { View, Text, FlatList, TouchableOpacity, StyleSheet, Button } from 'reac
 
 const ListScreen = ({ navigation }) => {
   const [lists, setLists] = useState([]);
+  const API_URL = 'https://a3ff-2804-1b1-a940-ff19-c49c-c87-c702-1994.ngrok-free.app/lists';
 
   useEffect(() => {
     fetchLists(); // Carrega as listas de compras quando a tela é carregada
   }, []);
 
-  // Função para buscar listas do servidor
+  // Função para buscar listas do servidor com autenticação JWT
   const fetchLists = async () => {
-    // Supondo que sua API para buscar listas esteja em /lists
-    const API_URL = 'https://a3ff-2804-1b1-a940-ff19-c49c-c87-c702-1994.ngrok-free.app/lists'; 
+    const token = 'SEU_TOKEN_AQUI'; // Aqui você deve substituir pelo token JWT real armazenado no cliente
+
     try {
-      const response = await fetch(API_URL);
-      const data = await response.json();
-      setLists(data);
+      const response = await fetch(API_URL, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`, // Envia o token JWT no cabeçalho de autorização
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setLists(data); // Atualiza o estado com as listas recebidas
+      } else {
+        console.error('Erro ao buscar listas:', response.statusText);
+      }
     } catch (error) {
       console.error('Erro ao buscar listas:', error);
     }

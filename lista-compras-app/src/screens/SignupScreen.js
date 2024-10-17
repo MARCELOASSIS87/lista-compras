@@ -16,7 +16,7 @@ const SignupScreen = ({ navigation }) => {
     Alert.alert('Sucesso', 'Conta criada com sucesso!');
 
     // Após o cadastro, redirecionar para a tela de login ou para o aplicativo principal
-    navigation.navigate('Login');
+    navigation.navigate('LoginScreen');
   };
 
   return (
@@ -51,7 +51,7 @@ const SignupScreen = ({ navigation }) => {
       <Button title="Cadastrar" onPress={handleSignup} />
       <Button
         title="Já tem uma conta? Faça login"
-        onPress={() => navigation.navigate('Login')} // Navega para a tela de login
+        onPress={() => navigation.navigate('LoginScreen')} // Navega para a tela de login
       />
     </View>
   );

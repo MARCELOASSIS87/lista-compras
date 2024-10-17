@@ -6,7 +6,9 @@ import { NavigationContainer } from '@react-navigation/native';
 import WelcomeScreen from '../screens/WelcomeScreen';
 import ListScreen from '../screens/ListScreen';
 import ItemsScreen from '../screens/ItemsScreen';
-import SignupScreen from '../screens/SignupScreen'; // Importe a tela de cadastro
+import SignupScreen from '../screens/SignupScreen';
+import LoginScreen from '../screens/LoginScreen'; // Certifique-se de que está importado corretamente
+import CreateListScreen from '../screens/CreateListScreen';
 
 const Stack = createStackNavigator();
 
@@ -15,34 +17,41 @@ const AppNavigator = () => {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Welcome">
         
-        {/* Tela de Bem-vindo */}
         <Stack.Screen 
           name="Welcome" 
           component={WelcomeScreen} 
           options={{ title: 'Bem-vindo' }}
         />
 
-        {/* Tela de Listas */}
         <Stack.Screen 
-          name="Lists" 
-          component={ListScreen} 
-          options={{ title: 'Minhas Listas' }}
+          name="LoginScreen" 
+          component={LoginScreen} 
+          options={{ title: 'Login' }}
         />
 
-        {/* Tela de Itens */}
-        <Stack.Screen 
-          name="Items" 
-          component={ItemsScreen} 
-          options={{ title: 'Itens da Lista' }}
-        />
-
-        {/* Tela de Cadastro */}
         <Stack.Screen 
           name="SignupScreen" 
           component={SignupScreen} 
           options={{ title: 'Cadastro' }}
         />
+
+        <Stack.Screen 
+          name="ListScreen" 
+          component={ListScreen} 
+          options={{ title: 'Minhas Listas' }}
+        />
+
+        <Stack.Screen 
+          name="ItemsScreen" 
+          component={ItemsScreen} 
+          options={{ title: 'Itens da Lista' }}
+        />
         
+        <Stack.Screen 
+          name="CreateListScreen" 
+          component={CreateListScreen}  // Adicione a tela de criação de lista aqui
+          options={{ title: 'Criar Lista' }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
