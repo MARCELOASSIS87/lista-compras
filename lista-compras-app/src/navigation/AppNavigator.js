@@ -6,6 +6,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import WelcomeScreen from '../screens/WelcomeScreen';
 import ListScreen from '../screens/ListScreen';
 import ItemsScreen from '../screens/ItemsScreen';
+import SignupScreen from '../screens/SignupScreen'; // Importe a tela de cadastro
 
 const Stack = createStackNavigator();
 
@@ -33,6 +34,13 @@ const AppNavigator = () => {
           name="Items" 
           component={ItemsScreen} 
           options={{ title: 'Itens da Lista' }}
+        />
+
+        {/* Tela de Cadastro */}
+        <Stack.Screen 
+          name="SignupScreen" 
+          component={SignupScreen} 
+          options={{ title: 'Cadastro' }}
         />
         
       </Stack.Navigator>
