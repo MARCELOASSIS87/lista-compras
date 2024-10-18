@@ -12,12 +12,12 @@ const LoginScreen = ({ navigation }) => {
     }
 
     try {
-      const response = await fetch('httpsa3ff-2804-1b1-a940-ff19-c49c-c87-c702-1994.ngrok-free.app/auth/login', {
+      const response = await fetch('https://276e-2804-1b1-a940-ff19-8013-9c34-80f5-287f.ngrok-free.app/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email: email, password: password }),
       });
 
       if (response.ok) {
@@ -26,7 +26,7 @@ const LoginScreen = ({ navigation }) => {
         // Armazenar o token JWT
         const token = data.token;
         // Redireciona para a tela de listas
-        navigation.navigate('Lists', { token });
+        navigation.navigate('ListScreen', { token });
       } else {
         Alert.alert('Erro', 'Falha no login. Verifique suas credenciais.');
       }

@@ -3,7 +3,7 @@ import { View, Text, FlatList, TouchableOpacity, StyleSheet, Button } from 'reac
 
 const ListScreen = ({ navigation }) => {
   const [lists, setLists] = useState([]);
-  const API_URL = 'https://a3ff-2804-1b1-a940-ff19-c49c-c87-c702-1994.ngrok-free.app/lists';
+  const API_URL = 'https://276e-2804-1b1-a940-ff19-8013-9c34-80f5-287f.ngrok-free.app/lists';
 
   useEffect(() => {
     fetchLists(); // Carrega as listas de compras quando a tela é carregada

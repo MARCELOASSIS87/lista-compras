@@ -10,17 +10,17 @@ const generateToken = (id) => {
 
 // Registro de novo usuário
 router.post('/register', async (req, res) => {
-  const { username, email, password } = req.body;
+  const { name, email, password } = req.body;
   try {
     const userExists = await User.findOne({ email });
     if (userExists) {
       return res.status(400).json({ message: 'Usuário já registrado' });
     }
 
-    const user = await User.create({ username, email, password });
+    const user = await User.create({ name, email, password });
     res.status(201).json({
       _id: user._id,
-      username: user.username,
+      name: user.name,
       email: user.email,
       token: generateToken(user._id),
     });
@@ -32,12 +32,14 @@ router.post('/register', async (req, res) => {
 // Login do usuário
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
+  console.log('dentro do user', email)
+  console.log('dentro do user', password)
   try {
     const user = await User.findOne({ email });
     if (user && (await user.matchPassword(password))) {
       res.json({
         _id: user._id,
-        username: user.username,
+        name: user.name,
         email: user.email,
         token: generateToken(user._id),
       });
@@ -50,3 +52,17 @@ router.post('/login', async (req, res) => {
 });
 
 module.exports = router;
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+s

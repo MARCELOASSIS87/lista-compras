@@ -11,8 +11,9 @@ const listSchema = new mongoose.Schema({
     ref: 'User',
     required: true,
   },
+  createdAt: { type: Date, default: Date.now },
 });
 
-const List = mongoose.model('List', listSchema);
+module.exports = mongoose.model('List', listSchema);
 
-module.exports = List;
+module.exports 
