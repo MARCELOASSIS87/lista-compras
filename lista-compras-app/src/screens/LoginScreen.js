@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { API_BASE_URL } from '../config'; // Importe o caminho base da API
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  // Função async para realizar o login
   const handleLogin = async () => {
     if (!email || !password) {
       Alert.alert('Erro', 'Por favor, preencha todos os campos.');
@@ -12,21 +14,24 @@ const LoginScreen = ({ navigation }) => {
     }
 
     try {
-      const response = await fetch('https://276e-2804-1b1-a940-ff19-8013-9c34-80f5-287f.ngrok-free.app/auth/login', {
+      // Chamada da API para login
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email: email, password: password }),
+        body: JSON.stringify({ email, password }),
       });
 
       if (response.ok) {
         const data = await response.json();
         console.log('Login bem-sucedido', data);
-        // Armazenar o token JWT
-        const token = data.token;
-        // Redireciona para a tela de listas
-        navigation.navigate('ListScreen', { token });
+
+        // Alerta de sucesso após o login
+        Alert.alert('Sucesso', 'Login bem-sucedido!');
+
+        // Redireciona o usuário para a tela de listas após o login bem-sucedido
+        navigation.navigate('ListScreen', { token: data.token });
       } else {
         Alert.alert('Erro', 'Falha no login. Verifique suas credenciais.');
       }
@@ -48,7 +53,7 @@ const LoginScreen = ({ navigation }) => {
         keyboardType="email-address"
         autoCapitalize="none"
       />
-
+      
       <TextInput
         style={styles.input}
         placeholder="Senha"
