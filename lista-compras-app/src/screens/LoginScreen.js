@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_BASE_URL } from '../config'; // Importe o caminho base da API
 
 const LoginScreen = ({ navigation }) => {
@@ -26,7 +27,8 @@ const LoginScreen = ({ navigation }) => {
       if (response.ok) {
         const data = await response.json();
         console.log('Login bem-sucedido', data);
-
+        const token = data.token;
+        await AsyncStorage.setItem('token', token);
         // Alerta de sucesso após o login
         Alert.alert('Sucesso', 'Login bem-sucedido!');
 

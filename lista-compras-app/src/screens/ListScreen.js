@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, Button } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, Button, Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage'; // Para recuperar o token JWT armazenado
+import { API_BASE_URL } from '../config'; // Importe o caminho base da API
 
 const ListScreen = ({ navigation }) => {
   const [lists, setLists] = useState([]);
-  const API_URL = 'https://276e-2804-1b1-a940-ff19-8013-9c34-80f5-287f.ngrok-free.app/lists';
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchLists(); // Carrega as listas de compras quando a tela é carregada
@@ -11,25 +13,36 @@ const ListScreen = ({ navigation }) => {
 
   // Função para buscar listas do servidor com autenticação JWT
   const fetchLists = async () => {
-    const token = 'SEU_TOKEN_AQUI'; // Aqui você deve substituir pelo token JWT real armazenado no cliente
-
     try {
-      const response = await fetch(API_URL, {
+      const token = await AsyncStorage.getItem('token'); // Recupera o token JWT do armazenamento local
+
+      if (!token) {
+        Alert.alert('Erro', 'Token não encontrado. Faça login novamente.');
+        navigation.navigate('LoginScreen');
+        return;
+      }
+
+      const response = await fetch(`${API_BASE_URL}/lists`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`, // Envia o token JWT no cabeçalho de autorização
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         }
       });
 
       if (response.ok) {
         const data = await response.json();
         setLists(data); // Atualiza o estado com as listas recebidas
+        setLoading(false);
       } else {
         console.error('Erro ao buscar listas:', response.statusText);
+        Alert.alert('Erro', 'Falha ao carregar listas. Por favor, tente novamente.');
+        setLoading(false);
       }
     } catch (error) {
       console.error('Erro ao buscar listas:', error);
+      Alert.alert('Erro', 'Ocorreu um erro ao buscar listas.');
+      setLoading(false);
     }
   };
 
@@ -37,6 +50,14 @@ const ListScreen = ({ navigation }) => {
     // Navega para a tela de itens de uma lista específica
     navigation.navigate('ItemsScreen', { listId });
   };
+
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.title}>Carregando suas listas...</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -51,6 +72,7 @@ const ListScreen = ({ navigation }) => {
             <Text style={styles.listText}>{item.name}</Text>
           </TouchableOpacity>
         )}
+        ListEmptyComponent={<Text>Você ainda não tem listas.</Text>}
       />
       <Button 
         title="Criar Nova Lista"
