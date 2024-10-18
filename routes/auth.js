@@ -1,7 +1,6 @@
 // routes/auth.js
 
 const express = require('express');
-const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const router = express.Router();
@@ -16,8 +15,7 @@ router.post('/register', async (req, res) => {
       return res.status(400).json({ message: 'Usuário já existe' });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({ name, email, password: hashedPassword });
+    const newUser = new User({ name, email, password });
     const savedUser = await newUser.save();
     
     console.log('Usuário salvo:', savedUser);
@@ -53,10 +51,9 @@ router.post('/login', async (req, res) => {
       console.log('Usuário não encontrado');
       return res.status(404).json({ message: 'Usuário não encontrado' });
     }
+    console.log('Comparando senha enviada:', password, 'com senha armazenada:', user.password);
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      console.log('Senha inválida');
+    if (user.password !== password) {
       return res.status(400).json({ message: 'Senha incorreta' });
     }
 
