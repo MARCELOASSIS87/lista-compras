@@ -16,6 +16,7 @@ router.post('/register', async (req, res) => {
     }
 
     const newUser = new User({ name, email, password });
+    console.log('aqui ele acabou de criar o user vamos ver a senha', password);
     const savedUser = await newUser.save();
     
     console.log('Usuário salvo:', savedUser);
