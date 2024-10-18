@@ -4,7 +4,7 @@
     "slug": "lista-compras-app",
     "version": "1.0.0",
     "orientation": "portrait",
-    "android": {"permissions":["android.permission.INTERNET"]},
+    "android": {"permissions":"android.permission.INTERNET"},
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
